@@ -1,0 +1,124 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.40.1.50106 for STM8             31/Jan/2017  22:31:42 #
+# Copyright 2010-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁÏ\STM8S103F3             #
+#                    STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\main.c          #
+#    Command line =  "I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁÏ\STM8S103F3            #
+#                    STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\main.c" -e -Ol  #
+#                    --no_cse --no_unroll --no_inline --no_code_motion        #
+#                    --no_tbaa --no_cross_call --debug --code_model small     #
+#                    --data_model medium -o "I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁ #
+#                    Ï\STM8S103F3 STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\De #
+#                    bug\Obj\" --dlib_config I:\IAR_\stm8\LIB\dlstm8smn.h     #
+#                    -lcN "I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁÏ\STM8S103F3       #
+#                    STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\Debug\List\"    #
+#                    -I "I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁÏ\STM8S103F3         #
+#                    STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\" -I            #
+#                    "I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁÏ\STM8S103F3            #
+#                    STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\STM8S_StdPeriph #
+#                    _Driver\src\" -I "I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁÏ\STM8 #
+#                    S103F3 STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\STM8S_St #
+#                    dPeriph_Driver\inc\" --vregs 16                          #
+#    List file    =  I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁÏ\STM8S103F3             #
+#                    STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\Debug\List\main #
+#                    .lst                                                     #
+#    Object file  =  I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁÏ\STM8S103F3             #
+#                    STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\Debug\Obj\main. #
+#                    o                                                        #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+I:\Meterial\stm8\STM8ÏµÁÐ³ÌÐò×ÊÁÏ\STM8S103F3 STM8S103F3×ÊÁÏ\STM8S103F3¿âÀý³Ì\IAR\GPIO\main.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    Project/main.c 
+      4            * @author  MCD Application Team
+      5            * @version V2.1.0
+      6            * @date    18-November-2011
+      7            * @brief   Main program body
+      8            ******************************************************************************
+      9            * @attention
+     10            *
+     11            * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     12            * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     13            * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     14            * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     15            * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     16            * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     17            *
+     18            * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+     19            ******************************************************************************
+     20            */ 
+     21          
+     22          
+     23          /* Includes ------------------------------------------------------------------*/
+     24          #include "stm8s.h"
+     25          
+     26          /* Private defines -----------------------------------------------------------*/
+     27          /* Private function prototypes -----------------------------------------------*/
+     28          /* Private functions ---------------------------------------------------------*/
+     29          #define LED_GPIO_PORT  (GPIOB)
+     30          #define LED_GPIO_PINS  (GPIO_PIN_5)
+     31          void Delay(uint16_t nCount)
+     32          {
+     33            /* Decrement nCount value */
+     34            while (nCount != 0)
+     35            {   
+     36              nCount--;
+     37            }
+     38          }
+     39          void main(void)
+     40          {
+     41            /* Initialize I/Os in Output Mode */
+     42            GPIO_Init(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
+     43          
+     44            while (1)
+     45            {
+     46              /* Toggles LEDs */
+     47              GPIO_WriteReverse(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS);
+     48              Delay(0xffff);
+     49            }
+     50            
+     51          }
+     52          
+     53          #ifdef USE_FULL_ASSERT
+     54          
+     55          /**
+     56            * @brief  Reports the name of the source file and the source line number
+     57            *   where the assert_param error has occurred.
+     58            * @param file: pointer to the source file name
+     59            * @param line: assert_param error line source number
+     60            * @retval : None
+     61            */
+     62          void assert_failed(u8* file, u32 line)
+     63          { 
+     64            /* User can add his own implementation to report the file name and line number,
+     65               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+     66          
+     67            /* Infinite loop */
+     68            while (1)
+     69            {
+     70            }
+     71          }
+     72          #endif
+     73          
+     74          /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       7  Delay
+       2  assert_failed
+      27  main
+
+ 
+ 36 bytes in section .near_func.text
+ 
+ 36 bytes of CODE memory
+
+Errors: none
+Warnings: none
