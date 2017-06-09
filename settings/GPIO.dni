@@ -28,11 +28,13 @@ ActionState=1
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=1947717920
+Checksum=1405031874
 [CallStack]
 ShowArgs=0
 [Disassembly]
 MixedMode=1
+[watch_formats]
+Fmt0={W}0:seq	4	0
 [DataSample]
 LogEnabled=0
 GraphEnabled=0
@@ -46,8 +48,10 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Count=0
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\MS5611.c}.85.5" 1 0 0 0 "" 0 ""
+Count=1
 [Aliases]
 A0=_ "C:\Documents and Settings\Administrator\桌面\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph_Driver\src\stm8s_gpio.c" ""
-Count=1
+A1=_ "I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph_Driver\src\stm8s_gpio.c" ""
+Count=2
 SuppressDialog=1

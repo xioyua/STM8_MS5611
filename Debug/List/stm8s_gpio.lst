@@ -1,39 +1,33 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.40.1.50106 for STM8             31/Jan/2017  22:31:43 #
+# IAR C/C++ Compiler V1.40.1.50106 for STM8             09/Jun/2017  10:03:39 #
 # Copyright 2010-2013 IAR Systems AB.                                         #
 #                                                                             #
-#    Source file  =  I:\Meterial\stm8\STM8系列程序资料\STM8S103F3             #
-#                    STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph #
-#                    _Driver\src\stm8s_gpio.c                                 #
-#    Command line =  "I:\Meterial\stm8\STM8系列程序资料\STM8S103F3            #
-#                    STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph #
-#                    _Driver\src\stm8s_gpio.c" -e -Ol --no_cse --no_unroll    #
-#                    --no_inline --no_code_motion --no_tbaa --no_cross_call   #
-#                    --debug --code_model small --data_model medium -o        #
-#                    "I:\Meterial\stm8\STM8系列程序资料\STM8S103F3            #
-#                    STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\Debug\Obj\"     #
-#                    --dlib_config I:\IAR_\stm8\LIB\dlstm8smn.h -lcN          #
-#                    "I:\Meterial\stm8\STM8系列程序资料\STM8S103F3            #
-#                    STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\Debug\List\"    #
-#                    -I "I:\Meterial\stm8\STM8系列程序资料\STM8S103F3         #
-#                    STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\" -I            #
-#                    "I:\Meterial\stm8\STM8系列程序资料\STM8S103F3            #
-#                    STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph #
-#                    _Driver\src\" -I "I:\Meterial\stm8\STM8系列程序资料\STM8 #
-#                    S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_St #
-#                    dPeriph_Driver\inc\" --vregs 16                          #
-#    List file    =  I:\Meterial\stm8\STM8系列程序资料\STM8S103F3             #
-#                    STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\Debug\List\stm8 #
-#                    s_gpio.lst                                               #
-#    Object file  =  I:\Meterial\stm8\STM8系列程序资料\STM8S103F3             #
-#                    STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\Debug\Obj\stm8s #
-#                    _gpio.o                                                  #
+#    Source file  =  D:\MyProject\stm8\my programme\STM8_MS5611\STM8S_StdPeri #
+#                    ph_Driver\src\stm8s_gpio.c                               #
+#    Command line =  "D:\MyProject\stm8\my programme\STM8_MS5611\STM8S_StdPer #
+#                    iph_Driver\src\stm8s_gpio.c" -e -On --no_cse             #
+#                    --no_unroll --no_inline --no_code_motion --no_tbaa       #
+#                    --no_cross_call --debug --code_model small --data_model  #
+#                    medium -o "D:\MyProject\stm8\my                          #
+#                    programme\STM8_MS5611\Debug\Obj\" --dlib_config          #
+#                    "C:\Program Files (x86)\IAR Systems\Embedded Workbench   #
+#                    6.5\stm8\LIB\dlstm8smn.h" -lcN "D:\MyProject\stm8\my     #
+#                    programme\STM8_MS5611\Debug\List\" -I                    #
+#                    "D:\MyProject\stm8\my programme\STM8_MS5611\" -I         #
+#                    "D:\MyProject\stm8\my programme\STM8_MS5611\STM8S_StdPer #
+#                    iph_Driver\src\" -I "D:\MyProject\stm8\my                #
+#                    programme\STM8_MS5611\STM8S_StdPeriph_Driver\inc\"       #
+#                    --vregs 16                                               #
+#    List file    =  D:\MyProject\stm8\my programme\STM8_MS5611\Debug\List\st #
+#                    m8s_gpio.lst                                             #
+#    Object file  =  D:\MyProject\stm8\my programme\STM8_MS5611\Debug\Obj\stm #
+#                    8s_gpio.o                                                #
 #                                                                             #
 #                                                                             #
 ###############################################################################
 
-I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph_Driver\src\stm8s_gpio.c
+D:\MyProject\stm8\my programme\STM8_MS5611\STM8S_StdPeriph_Driver\src\stm8s_gpio.c
       1          /**
       2            ******************************************************************************
       3            * @file    stm8s_gpio.c
@@ -281,24 +275,24 @@ I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR
 
    Bytes  Function/Label
    -----  --------------
-     126  ?<Constant "I:\\Meterial\\stm8\\STM8...">
-      26  GPIO_DeInit
-      92  GPIO_ExternalPullUpConfig
-     276  GPIO_Init
+      83  ?<Constant "D:\\MyProject\\stm8\\my ...">
+      30  GPIO_DeInit
+      90  GPIO_ExternalPullUpConfig
+     274  GPIO_Init
        3  GPIO_ReadInputData
        3  GPIO_ReadInputPin
        2  GPIO_ReadOutputData
        2  GPIO_Write
-       3  GPIO_WriteHigh
-       4  GPIO_WriteLow
-       3  GPIO_WriteReverse
+       7  GPIO_WriteHigh
+       8  GPIO_WriteLow
+       7  GPIO_WriteReverse
 
  
- 126 bytes in section .near.rodata
- 414 bytes in section .near_func.text
+  83 bytes in section .near.rodata
+ 426 bytes in section .near_func.text
  
- 414 bytes of CODE  memory
- 126 bytes of CONST memory
+ 426 bytes of CODE  memory
+  83 bytes of CONST memory
 
 Errors: none
 Warnings: none

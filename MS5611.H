@@ -23,4 +23,12 @@
 #define SCL_HIGH GPIO_WriteHigh(SCL_GPIO_PORT, (GPIO_Pin_TypeDef)SCL_GPIO_PINS)
 
 
+void ms5611_init(void);
+void send8(uint8_t data);
+uint16_t read_prom(uint8_t command);
+
+
+
+
 #endif
+

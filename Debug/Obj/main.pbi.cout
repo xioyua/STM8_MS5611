@@ -1,22 +1,22 @@
-"I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\main.c"
+"D:\MyProject\stm8\my programme\STM8_MS5611\main.c"
 -std=c99
 -ferror-limit=100
 -I
-I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO
+D:\MyProject\stm8\my programme\STM8_MS5611
 -I
-I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph_Driver\src
+D:\MyProject\stm8\my programme\STM8_MS5611\STM8S_StdPeriph_Driver\src
 -I
-I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph_Driver\inc
+D:\MyProject\stm8\my programme\STM8_MS5611\STM8S_StdPeriph_Driver\inc
 -I
-I:\IAR_\stm8\inc
+C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\stm8\inc
 -I
-I:\IAR_\stm8\inc\c
+C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\stm8\inc\c
 -I
-I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO
+D:\MyProject\stm8\my programme\STM8_MS5611
 -I
-I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph_Driver\src
+D:\MyProject\stm8\my programme\STM8_MS5611\STM8S_StdPeriph_Driver\src
 -I
-I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR\GPIO\STM8S_StdPeriph_Driver\inc
+D:\MyProject\stm8\my programme\STM8_MS5611\STM8S_StdPeriph_Driver\inc
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0
@@ -225,8 +225,8 @@ I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR
 -D__HAS_LOCATED_DECLARATION__=1
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593160
--D__DATE__="Jan 31 2017"
--D__TIME__="22:31:26"
+-D__DATE__="Jun  9 2017"
+-D__TIME__="10:16:38"
 -D__STDC__=1
 -D__STDC_VERSION__=199901L
 -D__STDC_HOSTED__=1
@@ -251,8 +251,8 @@ I:\Meterial\stm8\STM8系列程序资料\STM8S103F3 STM8S103F3资料\STM8S103F3库例程\IAR
 -D__EDG_SYSV=0
 -D__EDG_ANSIC=1
 -D__EDG_CPP0X_IL_EXTENSIONS_SUPPORTED=1
--D_DLIB_CONFIG_FILE_HEADER_NAME="I:\IAR_\stm8\LIB\dlstm8smn.h"
--D_DLIB_CONFIG_FILE_STRING="I:\\IAR_\\stm8\\LIB\\dlstm8smn.h"
+-D_DLIB_CONFIG_FILE_HEADER_NAME="C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.5\stm8\LIB\dlstm8smn.h"
+-D_DLIB_CONFIG_FILE_STRING="C:\\Program Files (x86)\\IAR Systems\\Embedded Workbench 6.5\\stm8\\LIB\\dlstm8smn.h"
 -D__VERSION__="IAR C/C++ Compiler V1.40.1.50106 for STM8"
 -D__CODE_MEMORY_LIST1__()=__CODE_MEM_HELPER1__(__code, 0 )
 -D__CODE_MEMORY_LIST2__(_P1)=__CODE_MEM_HELPER2__(__code, 0 ,  _P1 )

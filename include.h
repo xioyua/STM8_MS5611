@@ -4,8 +4,8 @@
 #include "stm8s.h"
 #include "MS5611.h"
 
-typedef unsigned char uchar
-typedef unsigned int uint
+typedef uint8_t uchar;
+typedef uint16_t uint;
 
 
 #endif

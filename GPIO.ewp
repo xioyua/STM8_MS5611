@@ -138,7 +138,7 @@
         </option>
         <option>
           <name>IccOptLevel</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IccOptStrategy</name>
@@ -147,7 +147,7 @@
         </option>
         <option>
           <name>IccOptLevelSlave</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IccOptAllowList</name>
@@ -1579,7 +1579,16 @@
   <group>
     <name>user</name>
     <file>
+      <name>$PROJ_DIR$\include.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\MS5611.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\MS5611.H</name>
     </file>
     <file>
       <name>$PROJ_DIR$\STM8S_StdPeriph_Driver\inc\stm8s.h</name>

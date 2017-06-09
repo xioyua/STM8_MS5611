@@ -1,0 +1,135 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.40.1.50106 for STM8             09/Jun/2017  10:24:41 #
+# Copyright 2010-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\MyProject\stm8\my programme\STM8_MS5611\MS5611.c      #
+#    Command line =  "D:\MyProject\stm8\my programme\STM8_MS5611\MS5611.c"    #
+#                    -e -On --no_cse --no_unroll --no_inline                  #
+#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
+#                    --code_model small --data_model medium -o                #
+#                    "D:\MyProject\stm8\my programme\STM8_MS5611\Debug\Obj\"  #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.5\stm8\LIB\dlstm8smn.h"     #
+#                    -lcN "D:\MyProject\stm8\my programme\STM8_MS5611\Debug\L #
+#                    ist\" -I "D:\MyProject\stm8\my programme\STM8_MS5611\"   #
+#                    -I "D:\MyProject\stm8\my programme\STM8_MS5611\STM8S_Std #
+#                    Periph_Driver\src\" -I "D:\MyProject\stm8\my             #
+#                    programme\STM8_MS5611\STM8S_StdPeriph_Driver\inc\"       #
+#                    --vregs 16                                               #
+#    List file    =  D:\MyProject\stm8\my programme\STM8_MS5611\Debug\List\MS #
+#                    5611.lst                                                 #
+#    Object file  =  D:\MyProject\stm8\my programme\STM8_MS5611\Debug\Obj\MS5 #
+#                    611.o                                                    #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\MyProject\stm8\my programme\STM8_MS5611\MS5611.c
+      1          #include "include.h"
+      2          
+      3          void delay_5us()
+      4          {
+      5              nop();nop();nop();nop();
+      6              nop();nop();nop();nop();
+      7              nop();nop();nop();nop();
+      8              nop();nop();nop();nop();
+      9              nop();nop();nop();nop();
+     10              nop();nop();nop();nop();
+     11              nop();nop();nop();nop();
+     12          }
+     13          
+     14          void ms5611_init()
+     15          {
+     16          
+     17              GPIO_Init(CSB_GPIO_PORT, (GPIO_Pin_TypeDef)CSB_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST); 
+     18              GPIO_Init(SCL_GPIO_PORT, (GPIO_Pin_TypeDef)SCL_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
+     19              GPIO_Init(SDA_GPIO_PORT, (GPIO_Pin_TypeDef)SDA_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
+     20          
+     21              GPIO_Init(SDO_GPIO_PORT, (GPIO_Pin_TypeDef)SDO_GPIO_PINS, GPIO_MODE_IN_FL_NO_IT);
+     22          
+     23              CSB_HIGH;
+     24              SCL_LOW;
+     25          }
+     26          
+     27          void send8(uchar data)
+     28          {
+     29              uchar i; 
+     30              uint8_t cmd = data;
+     31              CSB_LOW; 
+     32              SCL_LOW; 
+     33              delay_5us();
+     34              for(i=0;i<8;i++)
+     35              {
+     36                  if(data & 0x80)
+     37                      SDA_HIGH;
+     38                  else
+     39                      SDA_LOW;
+     40                  SCL_HIGH;
+     41                  delay_5us();
+     42                  SCL_LOW;
+     43                  cmd = cmd<<1;
+     44                  delay_5us();
+     45              }
+     46                  
+     47                      
+     48          }
+     49          
+     50          uint16_t read_prom(uchar command)
+     51          {
+     52              uchar i; 
+     53              uint16_t seq = 0x0000;
+     54              BitStatus datain=0;
+     55              uint8_t cmd = command;
+     56              CSB_LOW; 
+     57              SCL_LOW; 
+     58              delay_5us();
+     59              for(i=0;i<8;i++)
+     60              {
+     61                  if(command & 0x80)
+     62                      SDA_HIGH;
+     63                  else
+     64                      SDA_LOW;
+     65                  SCL_HIGH;
+     66                  delay_5us();
+     67                  SCL_LOW;
+     68                  cmd = cmd<<1;
+     69                  delay_5us();
+     70              }
+     71                  SDA_LOW;
+     72              for(i=0;i<16;i++)
+     73              {
+     74                  seq = seq <<1;
+     75                  SCL_HIGH;
+     76                  delay_5us();
+     77                  datain = GPIO_ReadInputPin(SDO_GPIO_PORT,(GPIO_Pin_TypeDef)SDO_GPIO_PINS);
+     78                  if(datain)
+     79                      seq |= 0x01; 
+     80                  SCL_LOW;
+     81                  delay_5us();
+     82                  
+     83              }
+     84              CSB_HIGH;
+     85              return seq;
+     86          }
+     87          
+     88          
+     89          
+     90          
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      29  delay_5us
+      63  ms5611_init
+     196  read_prom
+     106  send8
+
+ 
+ 394 bytes in section .near_func.text
+ 
+ 394 bytes of CODE memory
+
+Errors: none
+Warnings: 1
