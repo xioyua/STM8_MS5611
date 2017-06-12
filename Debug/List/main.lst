@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.40.1.50106 for STM8             09/Jun/2017  10:16:34 #
+# IAR C/C++ Compiler V1.40.1.50106 for STM8             12/Jun/2017  09:01:06 #
 # Copyright 2010-2013 IAR Systems AB.                                         #
 #                                                                             #
 #    Source file  =  D:\MyProject\stm8\my programme\STM8_MS5611\main.c        #
@@ -73,39 +73,40 @@ D:\MyProject\stm8\my programme\STM8_MS5611\main.c
      45            ms5611_init();
      46            send8(0x1e);
      47            Delay(500);
-     48            prom1 = read_prom(0xa2);
-     49          
-     50            while (1)
-     51            {
-     52              /* Toggles LEDs */
-     53              GPIO_WriteReverse(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS);
-     54              Delay(0xffff);
-     55            }
-     56            
-     57          }
-     58          
-     59          #ifdef USE_FULL_ASSERT
-     60          
-     61          /**
-     62            * @brief  Reports the name of the source file and the source line number
-     63            *   where the assert_param error has occurred.
-     64            * @param file: pointer to the source file name
-     65            * @param line: assert_param error line source number
-     66            * @retval : None
-     67            */
-     68          void assert_failed(u8* file, u32 line)
-     69          { 
-     70            /* User can add his own implementation to report the file name and line number,
-     71               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-     72          
-     73            /* Infinite loop */
-     74            while (1)
-     75            {
-     76            }
-     77          }
-     78          #endif
-     79          
-     80          /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
+     48            convert(0x48);
+     49            prom1 = read_prom(0xa2);
+     50          
+     51            while (1)
+     52            {
+     53              /* Toggles LEDs */
+     54              GPIO_WriteReverse(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS);
+     55              Delay(0xffff);
+     56            }
+     57            
+     58          }
+     59          
+     60          #ifdef USE_FULL_ASSERT
+     61          
+     62          /**
+     63            * @brief  Reports the name of the source file and the source line number
+     64            *   where the assert_param error has occurred.
+     65            * @param file: pointer to the source file name
+     66            * @param line: assert_param error line source number
+     67            * @retval : None
+     68            */
+     69          void assert_failed(u8* file, u32 line)
+     70          { 
+     71            /* User can add his own implementation to report the file name and line number,
+     72               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+     73          
+     74            /* Infinite loop */
+     75            while (1)
+     76            {
+     77            }
+     78          }
+     79          #endif
+     80          
+     81          /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
 
    Section sizes:
 
@@ -113,12 +114,12 @@ D:\MyProject\stm8\my programme\STM8_MS5611\main.c
    -----  --------------
        7  Delay
        2  assert_failed
-      50  main
+      55  main
 
  
- 59 bytes in section .near_func.text
+ 64 bytes in section .near_func.text
  
- 59 bytes of CODE memory
+ 64 bytes of CODE memory
 
 Errors: none
 Warnings: none

@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.40.1.50106 for STM8             09/Jun/2017  10:24:41 #
+# IAR C/C++ Compiler V1.40.1.50106 for STM8             12/Jun/2017  17:03:00 #
 # Copyright 2010-2013 IAR Systems AB.                                         #
 #                                                                             #
 #    Source file  =  D:\MyProject\stm8\my programme\STM8_MS5611\MS5611.c      #
@@ -39,97 +39,238 @@ D:\MyProject\stm8\my programme\STM8_MS5611\MS5611.c
      11              nop();nop();nop();nop();
      12          }
      13          
-     14          void ms5611_init()
+     14          void delay_ms(uint16_t nCount)
      15          {
-     16          
-     17              GPIO_Init(CSB_GPIO_PORT, (GPIO_Pin_TypeDef)CSB_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST); 
-     18              GPIO_Init(SCL_GPIO_PORT, (GPIO_Pin_TypeDef)SCL_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
-     19              GPIO_Init(SDA_GPIO_PORT, (GPIO_Pin_TypeDef)SDA_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
-     20          
-     21              GPIO_Init(SDO_GPIO_PORT, (GPIO_Pin_TypeDef)SDO_GPIO_PINS, GPIO_MODE_IN_FL_NO_IT);
-     22          
-     23              CSB_HIGH;
-     24              SCL_LOW;
-     25          }
-     26          
-     27          void send8(uchar data)
-     28          {
-     29              uchar i; 
-     30              uint8_t cmd = data;
-     31              CSB_LOW; 
-     32              SCL_LOW; 
-     33              delay_5us();
-     34              for(i=0;i<8;i++)
-     35              {
-     36                  if(data & 0x80)
-     37                      SDA_HIGH;
-     38                  else
-     39                      SDA_LOW;
-     40                  SCL_HIGH;
-     41                  delay_5us();
-     42                  SCL_LOW;
-     43                  cmd = cmd<<1;
-     44                  delay_5us();
-     45              }
-     46                  
-     47                      
-     48          }
-     49          
-     50          uint16_t read_prom(uchar command)
-     51          {
-     52              uchar i; 
-     53              uint16_t seq = 0x0000;
-     54              BitStatus datain=0;
-     55              uint8_t cmd = command;
-     56              CSB_LOW; 
-     57              SCL_LOW; 
-     58              delay_5us();
-     59              for(i=0;i<8;i++)
-     60              {
-     61                  if(command & 0x80)
-     62                      SDA_HIGH;
-     63                  else
-     64                      SDA_LOW;
-     65                  SCL_HIGH;
-     66                  delay_5us();
-     67                  SCL_LOW;
-     68                  cmd = cmd<<1;
-     69                  delay_5us();
-     70              }
-     71                  SDA_LOW;
-     72              for(i=0;i<16;i++)
-     73              {
-     74                  seq = seq <<1;
-     75                  SCL_HIGH;
-     76                  delay_5us();
-     77                  datain = GPIO_ReadInputPin(SDO_GPIO_PORT,(GPIO_Pin_TypeDef)SDO_GPIO_PINS);
-     78                  if(datain)
-     79                      seq |= 0x01; 
-     80                  SCL_LOW;
-     81                  delay_5us();
-     82                  
-     83              }
-     84              CSB_HIGH;
-     85              return seq;
-     86          }
-     87          
-     88          
-     89          
-     90          
+     16            /* Decrement nCount value */
+     17            while (nCount != 0)
+     18            {   
+     19              nCount--;
+     20            }
+     21          }
+     22          void ms5611_init()
+     23          {
+     24          
+     25              GPIO_Init(CSB_GPIO_PORT, (GPIO_Pin_TypeDef)CSB_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST); 
+     26              GPIO_Init(SCL_GPIO_PORT, (GPIO_Pin_TypeDef)SCL_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST);
+     27              GPIO_Init(SDA_GPIO_PORT, (GPIO_Pin_TypeDef)SDA_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST);
+     28          
+     29              GPIO_Init(SDO_GPIO_PORT, (GPIO_Pin_TypeDef)SDO_GPIO_PINS, GPIO_MODE_IN_FL_NO_IT);
+     30          
+     31              CSB_HIGH;
+     32              SCL_LOW;
+     33          }
+     34          
+     35          void send8(uchar data)
+     36          {
+     37              uchar i; 
+     38              uint8_t cmd = data;
+     39              CSB_LOW; 
+     40              SCL_LOW; 
+     41              delay_5us();
+     42              for(i=0;i<8;i++)
+     43              {
+     44                  if(cmd & 0x80)
+     45                      SDA_HIGH;
+     46                  else
+     47                      SDA_LOW;
+     48                  SCL_HIGH;
+     49                  delay_5us();
+     50                  SCL_LOW;
+     51                  cmd = cmd<<1;
+     52                  delay_5us();
+     53              }
+     54              CSB_HIGH;
+     55                      
+     56          }
+     57          
+     58          void convert(uchar data)
+     59          {
+     60              uchar i; 
+     61              uint8_t cmd = data;
+     62              CSB_LOW; 
+     63              SCL_LOW; 
+     64              delay_5us();
+     65              for(i=0;i<8;i++)
+     66              {
+     67                  if(cmd & 0x80)
+     68                      SDA_HIGH;
+     69                  else
+     70                      SDA_LOW;
+     71                  SCL_HIGH;
+     72                  delay_5us();
+     73                  SCL_LOW;
+     74                  cmd = cmd<<1;
+     75                  delay_5us();
+     76              }
+     77              delay_ms(0xfff);
+     78              CSB_HIGH;
+     79              SDA_LOW;
+     80                      
+     81          }
+     82          
+     83          
+     84          uint16_t read_prom(uchar command)
+     85          {
+     86              uchar i; 
+     87              uint16_t seq = 0x0000;
+     88              BitStatus datain=0;
+     89              uint8_t cmd = command;
+     90              CSB_LOW; 
+     91              SCL_LOW; 
+     92              delay_5us();
+     93              for(i=0;i<8;i++)
+     94              {
+     95                  if(cmd & 0x80)
+     96                      SDA_HIGH;
+     97                  else
+     98                      SDA_LOW;
+     99                  SCL_HIGH;
+    100                  delay_5us();
+    101                  SCL_LOW;
+    102                  cmd = cmd<<1;
+    103                  delay_5us();
+    104              }
+    105                  SDA_LOW;
+    106              for(i=0;i<16;i++)
+    107              {
+    108                  seq = seq <<1;
+    109                  SCL_HIGH;
+    110                  delay_5us();
+    111                  datain = GPIO_ReadInputPin(SDO_GPIO_PORT,(GPIO_Pin_TypeDef)SDO_GPIO_PINS);
+    112                  if(datain)
+    113                      seq |= 0x01; 
+    114                  SCL_LOW;
+    115                  delay_5us();
+    116                  
+    117              }
+    118              CSB_HIGH;
+    119              return seq;
+    120          }
+    121          
+    122          //**************************************
+    123          //I2C起始信号
+    124          //**************************************
+    125          void I2C_Start()
+    126          {
+    127              SDA_HIGH;                    //拉高数据线
+    128              SCL_HIGH;                    //拉高时钟线
+    129              delay_5us();                 //延时
+    130              SDA_LOW;                    //产生下降沿
+    131              delay_5us();                 //延时
+    132              SCL_LOW;                    //拉低时钟线
+    133          }
+    134          
+    135          //**************************************
+    136          //I2C停止信号
+    137          //**************************************
+    138          void I2C_Stop()
+    139          {
+    140              SDA_LOW;                    //拉低数据线
+    141              SCL_HIGH;                    //拉高时钟线
+    142              delay_5us();                 //延时
+    143              SDA_HIGH;                    //产生上升沿
+    144              delay_5us();                 //延时
+    145          }
+    146          //**************************************
+    147          //I2C发送应答信号
+    148          //入口参数:ack (0:ACK 1:NAK)
+    149          //**************************************
+    150          void I2C_SendACK(BitStatus ack)
+    151          {
+    152              
+    153              if(ack)                  //写应答信号
+    154              {
+    155                  SDA_HIGH;
+    156              }
+    157              else
+    158              {
+    159                  SDA_LOW;
+    160              }
+    161              SCL_HIGH;                    //拉高时钟线
+    162              delay_5us();                 //延时
+    163              SCL_LOW;                    //拉低时钟线
+    164              delay_5us();                 //延时
+    165          }
+    166          //**************************************
+    167          //I2C接收应答信号
+    168          //**************************************
+    169          uint8_t I2C_RecvACK()
+    170          {
+    171              uint8_t CY;
+    172              SCL_HIGH;                    //拉高时钟线
+    173              delay_5us();                 //延时
+    174              CY = GPIO_ReadInputPin(SDA_GPIO_PORT,(GPIO_Pin_TypeDef)SDA_GPIO_PINS);                   //读应答信号
+    175              SCL_LOW;                    //拉低时钟线
+    176              delay_5us();                 //延时
+    177              return CY;
+    178          }
+    179          //**************************************
+    180          //向I2C总线发送一个字节数据
+    181          //**************************************
+    182          void I2C_SendByte(uchar dat)
+    183          {
+    184              uchar i;
+    185              uchar cmd = dat;
+    186              for (i=0; i<8; i++)         //8位计数器
+    187              {
+    188                  if(cmd & 0x80)          //送数据口
+    189                      SDA_HIGH;
+    190                  else
+    191                      SDA_LOW;
+    192                  cmd <<= 1;              //移出数据的最高位               
+    193                  SCL_HIGH;                //拉高时钟线
+    194                  delay_5us();             //延时
+    195                  SCL_LOW;                //拉低时钟线
+    196                  delay_5us();             //延时
+    197              }
+    198              I2C_RecvACK();
+    199          }
+    200          //**************************************
+    201          //从I2C总线接收一个字节数据
+    202          //**************************************
+    203          uchar I2C_RecvByte()
+    204          {
+    205              uchar i;
+    206              uchar dat = 0;
+    207              uchar ldata;
+    208              SDA_HIGH;                    //使能内部上拉,准备读取数据,
+    209              for (i=0; i<8; i++)         //8位计数器
+    210              {
+    211                  dat <<= 1;
+    212                  SCL_HIGH;                //拉高时钟线
+    213                  delay_5us();             //延时
+    214                  ldata = GPIO_ReadInputPin(SDA_GPIO_PORT,(GPIO_Pin_TypeDef)SDA_GPIO_PINS);
+    215                  if(ldata)
+    216                      dat |= 0x01;             //读数据       
+    217                  SCL_LOW;                //拉低时钟线
+    218                  delay_5us();             //延时
+    219              }
+    220              return dat;
+    221          }
+    222          
+    223          
 
    Section sizes:
 
    Bytes  Function/Label
    -----  --------------
+      41  I2C_RecvACK
+      88  I2C_RecvByte
+      53  I2C_SendACK
+      90  I2C_SendByte
+      39  I2C_Start
+      31  I2C_Stop
+     128  convert
       29  delay_5us
+       7  delay_ms
       63  ms5611_init
      196  read_prom
-     106  send8
+     114  send8
 
  
- 394 bytes in section .near_func.text
+ 879 bytes in section .near_func.text
  
- 394 bytes of CODE memory
+ 879 bytes of CODE memory
 
 Errors: none
 Warnings: 1

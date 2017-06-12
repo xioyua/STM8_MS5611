@@ -28,7 +28,7 @@ ActionState=1
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=1405031874
+Checksum=-972524827
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -48,7 +48,7 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\MS5611.c}.85.5" 1 0 0 0 "" 0 ""
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\MS5611.c}.118.5" 1 0 0 0 "" 0 ""
 Count=1
 [Aliases]
 A0=_ "C:\Documents and Settings\Administrator\×ÀÃæ\STM8S103F3¿âÀý³Ì\IAR\GPIO\STM8S_StdPeriph_Driver\src\stm8s_gpio.c" ""

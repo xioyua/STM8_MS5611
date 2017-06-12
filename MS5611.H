@@ -26,6 +26,7 @@
 void ms5611_init(void);
 void send8(uint8_t data);
 uint16_t read_prom(uint8_t command);
+void convert(uint8_t data);
 
 
 

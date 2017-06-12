@@ -45,6 +45,7 @@ void main(void)
   ms5611_init();
   send8(0x1e);
   Delay(500);
+  convert(0x48);
   prom1 = read_prom(0xa2);
 
   while (1)
