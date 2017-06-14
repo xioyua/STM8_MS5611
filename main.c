@@ -39,20 +39,16 @@ void Delay(uint16_t nCount)
 void main(void)
 {
   volatile uint16_t prom1;
+  
   /* Initialize I/Os in Output Mode */
   GPIO_Init(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
 
-  ms5611_init();
-  send8(0x1e);
-  Delay(500);
-  convert(0x48);
-  prom1 = read_prom(0xa2);
-
+  
+  MS5611_INIT();
   while (1)
   {
-    /* Toggles LEDs */
-    GPIO_WriteReverse(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS);
-    Delay(0xffff);
+    MS561101BA_getTemperature(MS561101BA_D2_OSR_4096);
+    MS561101BA_getPressure(MS561101BA_D1_OSR_4096);  
   }
   
 }

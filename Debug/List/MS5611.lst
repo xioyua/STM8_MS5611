@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.40.1.50106 for STM8             12/Jun/2017  17:03:00 #
+# IAR C/C++ Compiler V1.40.1.50106 for STM8             14/Jun/2017  15:59:20 #
 # Copyright 2010-2013 IAR Systems AB.                                         #
 #                                                                             #
 #    Source file  =  D:\MyProject\stm8\my programme\STM8_MS5611\MS5611.c      #
@@ -28,249 +28,420 @@
 D:\MyProject\stm8\my programme\STM8_MS5611\MS5611.c
       1          #include "include.h"
       2          
-      3          void delay_5us()
-      4          {
-      5              nop();nop();nop();nop();
-      6              nop();nop();nop();nop();
-      7              nop();nop();nop();nop();
-      8              nop();nop();nop();nop();
-      9              nop();nop();nop();nop();
-     10              nop();nop();nop();nop();
-     11              nop();nop();nop();nop();
-     12          }
+      3          
+      4          uint16_t Cal_C[7];	        //用于存放PROM中的8组数据
+      5          uint32_t D1_Pres,D2_Temp;	// 存放压力和温度
+      6          float dT,TEMP;
+      7          double OFF_,SENS,T2;
+      8          float Pressure;				//大气压
+      9          float TEMP2,Aux,OFF2,SENS2;	//温度校验值
+     10          
+     11          uint32_t ex_Pressure;			//串口读数转换值
+     12          uint8_t exchange_num[8];
      13          
-     14          void delay_ms(uint16_t nCount)
+     14          void delay_5us()
      15          {
-     16            /* Decrement nCount value */
-     17            while (nCount != 0)
-     18            {   
-     19              nCount--;
-     20            }
-     21          }
-     22          void ms5611_init()
-     23          {
+     16              nop();nop();nop();nop();
+     17              nop();nop();nop();nop();
+     18              nop();nop();nop();nop();
+     19              nop();nop();nop();nop();
+     20              nop();nop();nop();nop();
+     21              nop();nop();nop();nop();
+     22              nop();nop();nop();nop();
+     23          }
      24          
-     25              GPIO_Init(CSB_GPIO_PORT, (GPIO_Pin_TypeDef)CSB_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST); 
-     26              GPIO_Init(SCL_GPIO_PORT, (GPIO_Pin_TypeDef)SCL_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST);
-     27              GPIO_Init(SDA_GPIO_PORT, (GPIO_Pin_TypeDef)SDA_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST);
-     28          
-     29              GPIO_Init(SDO_GPIO_PORT, (GPIO_Pin_TypeDef)SDO_GPIO_PINS, GPIO_MODE_IN_FL_NO_IT);
-     30          
-     31              CSB_HIGH;
-     32              SCL_LOW;
-     33          }
-     34          
-     35          void send8(uchar data)
-     36          {
-     37              uchar i; 
-     38              uint8_t cmd = data;
-     39              CSB_LOW; 
-     40              SCL_LOW; 
-     41              delay_5us();
-     42              for(i=0;i<8;i++)
-     43              {
-     44                  if(cmd & 0x80)
-     45                      SDA_HIGH;
-     46                  else
-     47                      SDA_LOW;
-     48                  SCL_HIGH;
-     49                  delay_5us();
-     50                  SCL_LOW;
-     51                  cmd = cmd<<1;
-     52                  delay_5us();
-     53              }
-     54              CSB_HIGH;
-     55                      
-     56          }
-     57          
-     58          void convert(uchar data)
-     59          {
-     60              uchar i; 
-     61              uint8_t cmd = data;
-     62              CSB_LOW; 
-     63              SCL_LOW; 
-     64              delay_5us();
-     65              for(i=0;i<8;i++)
-     66              {
-     67                  if(cmd & 0x80)
-     68                      SDA_HIGH;
-     69                  else
-     70                      SDA_LOW;
-     71                  SCL_HIGH;
-     72                  delay_5us();
-     73                  SCL_LOW;
-     74                  cmd = cmd<<1;
-     75                  delay_5us();
-     76              }
-     77              delay_ms(0xfff);
-     78              CSB_HIGH;
-     79              SDA_LOW;
-     80                      
-     81          }
-     82          
-     83          
-     84          uint16_t read_prom(uchar command)
-     85          {
-     86              uchar i; 
-     87              uint16_t seq = 0x0000;
-     88              BitStatus datain=0;
-     89              uint8_t cmd = command;
-     90              CSB_LOW; 
-     91              SCL_LOW; 
-     92              delay_5us();
-     93              for(i=0;i<8;i++)
-     94              {
-     95                  if(cmd & 0x80)
-     96                      SDA_HIGH;
-     97                  else
-     98                      SDA_LOW;
-     99                  SCL_HIGH;
-    100                  delay_5us();
-    101                  SCL_LOW;
-    102                  cmd = cmd<<1;
-    103                  delay_5us();
-    104              }
-    105                  SDA_LOW;
-    106              for(i=0;i<16;i++)
-    107              {
-    108                  seq = seq <<1;
-    109                  SCL_HIGH;
-    110                  delay_5us();
-    111                  datain = GPIO_ReadInputPin(SDO_GPIO_PORT,(GPIO_Pin_TypeDef)SDO_GPIO_PINS);
-    112                  if(datain)
-    113                      seq |= 0x01; 
-    114                  SCL_LOW;
-    115                  delay_5us();
-    116                  
-    117              }
-    118              CSB_HIGH;
-    119              return seq;
-    120          }
-    121          
-    122          //**************************************
-    123          //I2C起始信号
-    124          //**************************************
-    125          void I2C_Start()
-    126          {
-    127              SDA_HIGH;                    //拉高数据线
-    128              SCL_HIGH;                    //拉高时钟线
-    129              delay_5us();                 //延时
-    130              SDA_LOW;                    //产生下降沿
-    131              delay_5us();                 //延时
-    132              SCL_LOW;                    //拉低时钟线
-    133          }
-    134          
-    135          //**************************************
-    136          //I2C停止信号
-    137          //**************************************
-    138          void I2C_Stop()
-    139          {
-    140              SDA_LOW;                    //拉低数据线
-    141              SCL_HIGH;                    //拉高时钟线
-    142              delay_5us();                 //延时
-    143              SDA_HIGH;                    //产生上升沿
-    144              delay_5us();                 //延时
-    145          }
-    146          //**************************************
-    147          //I2C发送应答信号
-    148          //入口参数:ack (0:ACK 1:NAK)
+     25          void delay_ms(uint16_t nCount)
+     26          {
+     27            /* Decrement nCount value */
+     28            while (nCount != 0)
+     29            {   
+     30              nCount--;
+     31            }
+     32          }
+     33          void ms5611_GPIO_init()
+     34          {
+     35          
+     36              GPIO_Init(CSB_GPIO_PORT, (GPIO_Pin_TypeDef)CSB_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST); 
+     37              GPIO_Init(SCL_GPIO_PORT, (GPIO_Pin_TypeDef)SCL_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST);
+     38              GPIO_Init(SDA_GPIO_PORT, (GPIO_Pin_TypeDef)SDA_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST);
+     39          
+     40              GPIO_Init(SDO_GPIO_PORT, (GPIO_Pin_TypeDef)SDO_GPIO_PINS, GPIO_MODE_IN_FL_NO_IT);
+     41          
+     42              CSB_HIGH;
+     43              SCL_LOW;
+     44          
+     45              
+     46          
+     47          }
+     48          
+     49          void send8(uchar data)
+     50          {
+     51              uchar i; 
+     52              uint8_t cmd = data;
+     53              CSB_LOW; 
+     54              SCL_LOW; 
+     55              delay_5us();
+     56              for(i=0;i<8;i++)
+     57              {
+     58                  if(cmd & 0x80)
+     59                      SDA_HIGH;
+     60                  else
+     61                      SDA_LOW;
+     62                  SCL_HIGH;
+     63                  delay_5us();
+     64                  SCL_LOW;
+     65                  cmd = cmd<<1;
+     66                  delay_5us();
+     67              }
+     68              CSB_HIGH;
+     69                      
+     70          }
+     71          
+     72          void convert(uchar data)
+     73          {
+     74              uchar i; 
+     75              uint8_t cmd = data;
+     76              CSB_LOW; 
+     77              SCL_LOW; 
+     78              delay_5us();
+     79              for(i=0;i<8;i++)
+     80              {
+     81                  if(cmd & 0x80)
+     82                      SDA_HIGH;
+     83                  else
+     84                      SDA_LOW;
+     85                  SCL_HIGH;
+     86                  delay_5us();
+     87                  SCL_LOW;
+     88                  cmd = cmd<<1;
+     89                  delay_5us();
+     90              }
+     91              delay_ms(0xfff);
+     92              CSB_HIGH;
+     93              SDA_LOW;
+     94                      
+     95          }
+     96          
+     97          
+     98          uint16_t read_prom(uchar command)
+     99          {
+    100              uchar i; 
+    101              uint16_t seq = 0x0000;
+    102              BitStatus datain=0;
+    103              uint8_t cmd = command;
+    104              CSB_LOW; 
+    105              SCL_LOW; 
+    106              delay_5us();
+    107              for(i=0;i<8;i++)
+    108              {
+    109                  if(cmd & 0x80)
+    110                      SDA_HIGH;
+    111                  else
+    112                      SDA_LOW;
+    113                  SCL_HIGH;
+    114                  delay_5us();
+    115                  SCL_LOW;
+    116                  cmd = cmd<<1;
+    117                  delay_5us();
+    118              }
+    119                  SDA_LOW;
+    120              for(i=0;i<16;i++)
+    121              {
+    122                  seq = seq <<1;
+    123                  SCL_HIGH;
+    124                  delay_5us();
+    125                  datain = GPIO_ReadInputPin(SDO_GPIO_PORT,(GPIO_Pin_TypeDef)SDO_GPIO_PINS);
+    126                  if(datain)
+    127                      seq |= 0x01; 
+    128                  SCL_LOW;
+    129                  delay_5us();
+    130                  
+    131              }
+    132              CSB_HIGH;
+    133              return seq;
+    134          }
+    135          
+    136          //**************************************
+    137          //I2C起始信号
+    138          //**************************************
+    139          void I2C_Start()
+    140          {
+    141              SDA_HIGH;                    //拉高数据线
+    142              SCL_HIGH;                    //拉高时钟线
+    143              delay_5us();                 //延时
+    144              SDA_LOW;                    //产生下降沿
+    145              delay_5us();                 //延时
+    146              SCL_LOW;                    //拉低时钟线
+    147          }
+    148          
     149          //**************************************
-    150          void I2C_SendACK(BitStatus ack)
-    151          {
-    152              
-    153              if(ack)                  //写应答信号
-    154              {
-    155                  SDA_HIGH;
-    156              }
-    157              else
-    158              {
-    159                  SDA_LOW;
-    160              }
-    161              SCL_HIGH;                    //拉高时钟线
-    162              delay_5us();                 //延时
-    163              SCL_LOW;                    //拉低时钟线
-    164              delay_5us();                 //延时
-    165          }
-    166          //**************************************
-    167          //I2C接收应答信号
-    168          //**************************************
-    169          uint8_t I2C_RecvACK()
-    170          {
-    171              uint8_t CY;
-    172              SCL_HIGH;                    //拉高时钟线
-    173              delay_5us();                 //延时
-    174              CY = GPIO_ReadInputPin(SDA_GPIO_PORT,(GPIO_Pin_TypeDef)SDA_GPIO_PINS);                   //读应答信号
-    175              SCL_LOW;                    //拉低时钟线
+    150          //I2C停止信号
+    151          //**************************************
+    152          void I2C_Stop()
+    153          {
+    154              SDA_LOW;                    //拉低数据线
+    155              SCL_HIGH;                    //拉高时钟线
+    156              delay_5us();                 //延时
+    157              SDA_HIGH;                    //产生上升沿
+    158              delay_5us();                 //延时
+    159          }
+    160          //**************************************
+    161          //I2C发送应答信号
+    162          //入口参数:ack (0:ACK 1:NAK)
+    163          //**************************************
+    164          void I2C_SendACK(uchar ack)
+    165          {
+    166              
+    167              if(ack)                  //写应答信号
+    168              {
+    169                  SDA_HIGH;
+    170              }
+    171              else
+    172              {
+    173                  SDA_LOW;
+    174              }
+    175              SCL_HIGH;                    //拉高时钟线
     176              delay_5us();                 //延时
-    177              return CY;
-    178          }
-    179          //**************************************
-    180          //向I2C总线发送一个字节数据
-    181          //**************************************
-    182          void I2C_SendByte(uchar dat)
-    183          {
-    184              uchar i;
-    185              uchar cmd = dat;
-    186              for (i=0; i<8; i++)         //8位计数器
-    187              {
-    188                  if(cmd & 0x80)          //送数据口
-    189                      SDA_HIGH;
-    190                  else
-    191                      SDA_LOW;
-    192                  cmd <<= 1;              //移出数据的最高位               
-    193                  SCL_HIGH;                //拉高时钟线
-    194                  delay_5us();             //延时
-    195                  SCL_LOW;                //拉低时钟线
-    196                  delay_5us();             //延时
-    197              }
-    198              I2C_RecvACK();
-    199          }
-    200          //**************************************
-    201          //从I2C总线接收一个字节数据
-    202          //**************************************
-    203          uchar I2C_RecvByte()
-    204          {
-    205              uchar i;
-    206              uchar dat = 0;
-    207              uchar ldata;
-    208              SDA_HIGH;                    //使能内部上拉,准备读取数据,
-    209              for (i=0; i<8; i++)         //8位计数器
-    210              {
-    211                  dat <<= 1;
-    212                  SCL_HIGH;                //拉高时钟线
-    213                  delay_5us();             //延时
-    214                  ldata = GPIO_ReadInputPin(SDA_GPIO_PORT,(GPIO_Pin_TypeDef)SDA_GPIO_PINS);
-    215                  if(ldata)
-    216                      dat |= 0x01;             //读数据       
-    217                  SCL_LOW;                //拉低时钟线
-    218                  delay_5us();             //延时
-    219              }
-    220              return dat;
-    221          }
-    222          
-    223          
+    177              SCL_LOW;                    //拉低时钟线
+    178              delay_5us();                 //延时
+    179          }
+    180          //**************************************
+    181          //I2C接收应答信号
+    182          //**************************************
+    183          uint8_t I2C_RecvACK()
+    184          {
+    185              uint8_t CY;
+    186              SCL_HIGH;                    //拉高时钟线
+    187              delay_5us();                 //延时
+    188              CY = GPIO_ReadInputPin(SDA_GPIO_PORT,(GPIO_Pin_TypeDef)SDA_GPIO_PINS);                   //读应答信号
+    189              SCL_LOW;                    //拉低时钟线
+    190              delay_5us();                 //延时
+    191              return CY;
+    192          }
+    193          //**************************************
+    194          //向I2C总线发送一个字节数据
+    195          //**************************************
+    196          void I2C_SendByte(uchar dat)
+    197          {
+    198              uchar i;
+    199              uchar cmd = dat;
+    200              for (i=0; i<8; i++)         //8位计数器
+    201              {
+    202                  if(cmd & 0x80)          //送数据口
+    203                      SDA_HIGH;
+    204                  else
+    205                      SDA_LOW;
+    206                  cmd <<= 1;              //移出数据的最高位               
+    207                  SCL_HIGH;                //拉高时钟线
+    208                  delay_5us();             //延时
+    209                  SCL_LOW;                //拉低时钟线
+    210                  delay_5us();             //延时
+    211              }
+    212              I2C_RecvACK();
+    213          }
+    214          //**************************************
+    215          //从I2C总线接收一个字节数据
+    216          //**************************************
+    217          uchar I2C_RecvByte()
+    218          {
+    219              uchar i;
+    220              uchar dat = 0;
+    221              uchar ldata;
+    222              SDA_HIGH;                    //使能内部上拉,准备读取数据,
+    223              for (i=0; i<8; i++)         //8位计数器
+    224              {
+    225                  dat <<= 1;
+    226                  SCL_HIGH;                //拉高时钟线
+    227                  delay_5us();             //延时
+    228                  ldata = GPIO_ReadInputPin(SDA_GPIO_PORT,(GPIO_Pin_TypeDef)SDA_GPIO_PINS);
+    229                  if(ldata)
+    230                      dat |= 0x01;             //读数据       
+    231                  SCL_LOW;                //拉低时钟线
+    232                  delay_5us();             //延时
+    233              }
+    234              return dat;
+    235          }
+    236          
+    237          
+    238          void MSC5611_test()
+    239          {   
+    240               volatile uint8_t lsdata;
+    241               SDA_HIGH;
+    242               lsdata = GPIO_ReadInputPin(GPIOC,(GPIO_Pin_TypeDef)GPIO_PIN_6);     
+    243            
+    244          }
+    245          
+    246          //=========================================================
+    247          //******MS561101BA程序********
+    248          //=========================================================
+    249          //重启MS5611
+    250          void MS561101BA_RESET()
+    251          {	
+    252          	I2C_Start();
+    253          	I2C_SendByte(MS561101BA_SlaveAddress);
+    254          //	I2C_RecvACK();
+    255          	I2C_SendByte(MS561101BA_RST);
+    256          //	I2C_RecvACK();
+    257          	I2C_Stop();
+    258          }
+    259          
+    260          //
+    261          void MS561101BA_PROM_READ()
+    262          {
+    263          	uchar d1,d2,i;
+    264          	for(i=0;i<=6;i++)
+    265          	{
+    266          		I2C_Start();
+    267          		I2C_SendByte(MS561101BA_SlaveAddress);
+    268          		I2C_SendByte((MS561101BA_PROM_RD+i*2));
+    269          
+    270          
+    271          		I2C_Start();
+    272          		I2C_SendByte(MS561101BA_SlaveAddress+1);
+    273          		d1=I2C_RecvByte();
+    274          		I2C_SendACK(0);
+    275          		d2=I2C_RecvByte();
+    276          		I2C_SendACK(1);
+    277          		I2C_Stop();
+    278          
+    279          		delay_5us();
+    280          
+    281          		Cal_C[i]=((uint)d1<<8)|d2;
+    282          	}
+    283          }
+    284          
+    285          uint32_t MS561101BA_DO_CONVERSION(uchar command)
+    286          {
+    287          	uint32_t conversion=0;
+    288          	uint32_t conv1,conv2,conv3; 
+    289          	I2C_Start();
+    290          	I2C_SendByte(MS561101BA_SlaveAddress);
+    291          	I2C_SendByte(command);
+    292          	I2C_Stop();
+    293          
+    294          	delay_ms(0xffff);
+    295          
+    296          	I2C_Start();
+    297          	I2C_SendByte(MS561101BA_SlaveAddress);
+    298          	I2C_SendByte(0);
+    299          
+    300          	I2C_Start();
+    301          	I2C_SendByte(MS561101BA_SlaveAddress+1);
+    302          	conv1=I2C_RecvByte();
+    303          	I2C_SendACK(0);
+    304          	conv2=I2C_RecvByte();
+    305          	I2C_SendACK(0);
+    306          	conv3=I2C_RecvByte();
+    307          
+    308          	I2C_SendACK(1);
+    309          	I2C_Stop();
+    310          
+    311          	conversion=conv1*65535+conv2*256+conv3;
+    312          
+    313          	return conversion;
+    314          }
+    315          
+    316          
+    317          
+    318          void MS561101BA_getTemperature(uchar OSR_Temp)
+    319          {
+    320              
+    321          	D2_Temp= MS561101BA_DO_CONVERSION(OSR_Temp);
+    322          	delay_ms(10); 
+    323          	dT=D2_Temp - (((uint32_t)Cal_C[5])<<8);
+    324          	TEMP=2000+dT*((uint32_t)Cal_C[6])/8388608;
+    325          
+    326          }
+    327          
+    328          void MS561101BA_getPressure(uchar OSR_Pres)
+    329          {
+    330          	
+    331          	D1_Pres= MS561101BA_DO_CONVERSION(OSR_Pres);
+    332          	delay_ms(10); 
+    333          	OFF_=(uint32_t)Cal_C[2]*65536+((uint32_t)Cal_C[4]*dT)/128;
+    334          	SENS=(uint32_t)Cal_C[1]*32768+((uint32_t)Cal_C[3]*dT)/256;
+    335          	
+    336          	if(TEMP<2000)
+    337          	{
+    338          		// second order temperature compensation when under 20 degrees C
+    339          		T2 = (dT*dT) / 0x80000000;
+    340          		Aux = TEMP*TEMP;
+    341          		OFF2 = 2.5*Aux;
+    342          		SENS2 = 1.25*Aux;
+    343          		TEMP = TEMP - TEMP2;
+    344          		OFF_ = OFF_ - OFF2;
+    345          		SENS = SENS - SENS2;	
+    346          	}
+    347          
+    348          	Pressure=(D1_Pres*SENS/2097152-OFF_)/32768;
+    349          }
+    350          
+    351          
+    352          void MS5611_icc_init()
+    353          {
+    354          	MS561101BA_RESET();
+    355          	delay_ms(1000);
+    356          	MS561101BA_PROM_READ();
+    357          	delay_ms(1000);
+    358          }
+    359          
+    360          void MS5611_INIT()
+    361          {
+    362              delay_ms(1000);
+    363              ms5611_GPIO_init();
+    364              MS5611_icc_init();
+    365          }
+    366          
+    367          
+    368          
+    369          
 
    Section sizes:
 
    Bytes  Function/Label
    -----  --------------
+       4  Aux
+      14  Cal_C
+       4  D1_Pres
+       4  D2_Temp
       41  I2C_RecvACK
       88  I2C_RecvByte
       53  I2C_SendACK
       90  I2C_SendByte
       39  I2C_Start
       31  I2C_Stop
+     162  MS561101BA_DO_CONVERSION
+     123  MS561101BA_PROM_READ
+      17  MS561101BA_RESET
+     342  MS561101BA_getPressure
+      91  MS561101BA_getTemperature
+      13  MS5611_INIT
+      19  MS5611_icc_init
+      23  MSC5611_test
+       4  OFF2
+       4  OFF_
+       4  Pressure
+       4  SENS
+       4  SENS2
+       4  T2
+       4  TEMP
+       4  TEMP2
      128  convert
+       4  dT
       29  delay_5us
        7  delay_ms
-      63  ms5611_init
+       4  ex_Pressure
+       8  exchange_num
+      63  ms5611_GPIO_init
      196  read_prom
      114  send8
 
  
- 879 bytes in section .near_func.text
+    74 bytes in section .near.bss
+ 1 669 bytes in section .near_func.text
  
- 879 bytes of CODE memory
+ 1 669 bytes of CODE memory
+    74 bytes of DATA memory
 
 Errors: none
 Warnings: 1

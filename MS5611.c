@@ -1,5 +1,16 @@
 #include "include.h"
 
+
+uint16_t Cal_C[7];	        //用于存放PROM中的8组数据
+uint32_t D1_Pres,D2_Temp;	// 存放压力和温度
+float dT,TEMP;
+double OFF_,SENS,T2;
+float Pressure;				//大气压
+float TEMP2,Aux,OFF2,SENS2;	//温度校验值
+
+uint32_t ex_Pressure;			//串口读数转换值
+uint8_t exchange_num[8];
+
 void delay_5us()
 {
     nop();nop();nop();nop();
@@ -19,7 +30,7 @@ void delay_ms(uint16_t nCount)
     nCount--;
   }
 }
-void ms5611_init()
+void ms5611_GPIO_init()
 {
 
     GPIO_Init(CSB_GPIO_PORT, (GPIO_Pin_TypeDef)CSB_GPIO_PINS, GPIO_MODE_OUT_OD_HIZ_FAST); 
@@ -30,6 +41,9 @@ void ms5611_init()
 
     CSB_HIGH;
     SCL_LOW;
+
+    
+
 }
 
 void send8(uchar data)
@@ -147,7 +161,7 @@ void I2C_Stop()
 //I2C发送应答信号
 //入口参数:ack (0:ACK 1:NAK)
 //**************************************
-void I2C_SendACK(BitStatus ack)
+void I2C_SendACK(uchar ack)
 {
     
     if(ack)                  //写应答信号
@@ -219,5 +233,137 @@ uchar I2C_RecvByte()
     }
     return dat;
 }
+
+
+void MSC5611_test()
+{   
+     volatile uint8_t lsdata;
+     SDA_HIGH;
+     lsdata = GPIO_ReadInputPin(GPIOC,(GPIO_Pin_TypeDef)GPIO_PIN_6);     
+  
+}
+
+//=========================================================
+//******MS561101BA程序********
+//=========================================================
+//重启MS5611
+void MS561101BA_RESET()
+{	
+	I2C_Start();
+	I2C_SendByte(MS561101BA_SlaveAddress);
+//	I2C_RecvACK();
+	I2C_SendByte(MS561101BA_RST);
+//	I2C_RecvACK();
+	I2C_Stop();
+}
+
+//
+void MS561101BA_PROM_READ()
+{
+	uchar d1,d2,i;
+	for(i=0;i<=6;i++)
+	{
+		I2C_Start();
+		I2C_SendByte(MS561101BA_SlaveAddress);
+		I2C_SendByte((MS561101BA_PROM_RD+i*2));
+
+
+		I2C_Start();
+		I2C_SendByte(MS561101BA_SlaveAddress+1);
+		d1=I2C_RecvByte();
+		I2C_SendACK(0);
+		d2=I2C_RecvByte();
+		I2C_SendACK(1);
+		I2C_Stop();
+
+		delay_5us();
+
+		Cal_C[i]=((uint)d1<<8)|d2;
+	}
+}
+
+uint32_t MS561101BA_DO_CONVERSION(uchar command)
+{
+	uint32_t conversion=0;
+	uint32_t conv1,conv2,conv3; 
+	I2C_Start();
+	I2C_SendByte(MS561101BA_SlaveAddress);
+	I2C_SendByte(command);
+	I2C_Stop();
+
+	delay_ms(0xffff);
+
+	I2C_Start();
+	I2C_SendByte(MS561101BA_SlaveAddress);
+	I2C_SendByte(0);
+
+	I2C_Start();
+	I2C_SendByte(MS561101BA_SlaveAddress+1);
+	conv1=I2C_RecvByte();
+	I2C_SendACK(0);
+	conv2=I2C_RecvByte();
+	I2C_SendACK(0);
+	conv3=I2C_RecvByte();
+
+	I2C_SendACK(1);
+	I2C_Stop();
+
+	conversion=conv1*65535+conv2*256+conv3;
+
+	return conversion;
+}
+
+
+
+void MS561101BA_getTemperature(uchar OSR_Temp)
+{
+    
+	D2_Temp= MS561101BA_DO_CONVERSION(OSR_Temp);
+	delay_ms(10); 
+	dT=D2_Temp - (((uint32_t)Cal_C[5])<<8);
+	TEMP=2000+dT*((uint32_t)Cal_C[6])/8388608;
+
+}
+
+void MS561101BA_getPressure(uchar OSR_Pres)
+{
+	
+	D1_Pres= MS561101BA_DO_CONVERSION(OSR_Pres);
+	delay_ms(10); 
+	OFF_=(uint32_t)Cal_C[2]*65536+((uint32_t)Cal_C[4]*dT)/128;
+	SENS=(uint32_t)Cal_C[1]*32768+((uint32_t)Cal_C[3]*dT)/256;
+	
+	if(TEMP<2000)
+	{
+		// second order temperature compensation when under 20 degrees C
+		T2 = (dT*dT) / 0x80000000;
+		Aux = TEMP*TEMP;
+		OFF2 = 2.5*Aux;
+		SENS2 = 1.25*Aux;
+		TEMP = TEMP - TEMP2;
+		OFF_ = OFF_ - OFF2;
+		SENS = SENS - SENS2;	
+	}
+
+	Pressure=(D1_Pres*SENS/2097152-OFF_)/32768;
+}
+
+
+void MS5611_icc_init()
+{
+	MS561101BA_RESET();
+	delay_ms(1000);
+	MS561101BA_PROM_READ();
+	delay_ms(1000);
+}
+
+void MS5611_INIT()
+{
+    delay_ms(1000);
+    ms5611_GPIO_init();
+    MS5611_icc_init();
+}
+
+
 
 
